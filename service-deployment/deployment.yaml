@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+# The kind of this file is deployment
+kind: Deployment
+# The tag of our server
+metadata:
+  name: example-service
+  namespace: example-service
+
+# The required deployment
+spec:
+  selector:
+    matchLabels:
+      app: example-service
+  # Number of default replicas to deploy
+  replicas: 1
+
+  # The Pod desription
+  template:
+    metadata:
+      labels:
+        app: example-service
+    spec:
+      # The image which we will deploy
+      # WE will need to update it later on to Azure ACR url
+      containers:   
+        # The matches tag
+        - name: example-service
+          # The image location
+          image: devacrau10tix.azurecr.io/example-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+      nodeSelector:
+        beta.kubernetes.io/instance-type: Standard_B2s
