@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __ServiceName__
+spec:
+  template:
+    spec:
+      containers:
+        - name: __ServiceName__
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - '--insecure'
+                - 'https://localhost:__containerPort__/v1/build'
+            failureThreshold: 5
+            initialDelaySeconds: 120
+            periodSeconds: 60
+            successThreshold: 1
+            timeoutSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - curl
+                - '--insecure'
+                - 'https://localhost:__containerPort__/v1/build'
+            failureThreshold: 5
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            successThreshold: 1
+            timeoutSeconds: 10            
+       
