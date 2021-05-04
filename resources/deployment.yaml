@@ -3,32 +3,35 @@ apiVersion: apps/v1
 kind: Deployment
 # The tag of our server
 metadata:
-  name: example-service
-  namespace: example-service
-
+  name: __ServiceName__
+  namespace: __ServiceName__
 # The required deployment
 spec:
   selector:
     matchLabels:
-      app: example-service
+      app: __ServiceName__
   # Number of default replicas to deploy
   replicas: 1
-
   # The Pod desription
   template:
     metadata:
       labels:
-        app: example-service
+        app: __ServiceName__
     spec:
       # The image which we will deploy
-      # WE will need to update it later on to Azure ACR url
-      containers:   
+      containers:
         # The matches tag
-        - name: example-service
+        - name: __ServiceName__
           # The image location
-          image: devacrau10tix.azurecr.io/example-service
+          image: __imageName__
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: __containerPort__
+          envFrom:
+            - secretRef:
+                name: __ServiceName__-secret
+          resources:
+            limits:
+              cpu: 500m
       nodeSelector:
-        beta.kubernetes.io/instance-type: Standard_B2s
+        beta.kubernetes.io/instance-type: __InstanceType__
