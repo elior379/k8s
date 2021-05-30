@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __ServiceName__
+spec:
+  template:
+    spec:
+      containers:
+        - name: __ServiceName__
+          image: __imageName__
+          imagePullPolicy: Always
+          ports:
+            - containerPort: __containerPort__
+          envFrom:
+            - secretRef:
+                name: au10tix-tls
+            - secretRef:
+                name: __ServiceName__-secret   
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/secret-volume
+          lifecycle:
+            preStop:
+              exec:
+               command:
+                - /bin/sh
+                - -c
+                - cp /source/std_err.txt /source/std_err_$ENVIRONMENT'_'$HOSTNAME.txt && /source/azcopy cp /source/std_err_$ENVIRONMENT'_'$HOSTNAME.txt "https://weubosoptest.blob.core.windows.net/sdc-logs?sv=2019-12-12&ss=bfqt&srt=sco&sp=rwdlacupx&se=2024-11-08T21:37:55Z&st=2020-11-08T13:37:55Z&spr=https,http&sig=KM%2Bm%2Fi3TPpNJd0LEiYMt3GuxzsFyGtabAlhcoDvNiYs%3D"
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+      # The secret data is exposed to Containers in the Pod through a Volume.
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: au10tix-tls                
